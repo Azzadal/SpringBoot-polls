@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тестовое задание</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/modal.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <section class="main">
+        <div class="left_panel">
+            <input id="createPoll" type="button" value="Создать опрос"/>
+            <div class="getPollsBlock">
+                <input id="getPolls" type="button" value="Получить опросы"/>
+                <div class="select">
+                    <select name="filter" id="filter">
+                        <option value="">Все</option>
+                        <option value="onDateStart">По дате начала</option>
+                        <option value="onDateStart">По дате окончания</option>
+                        <option value="onDateStart">По наименованию</option>
+                    </select>
+                    <select name="sortSelect" id="sortSelect">
+                        <option value="">Без сортировки</option>
+                        <option value="">По наименованию</option>
+                    </select>
+                </div>
+            </div>
+            <label for="dateFilter">Фильтр по дате</label><input id="dateFilter" type="date" />
+            <label for="nameFilter">Фильтр по имени</label><input id="nameFilter" type="text" placeholder="фильтр имени" />
+            <div class="poll__list"></div>
+        </div>
+        <div class="right_panel"></div>
+    </section>
+    <script src="js/base.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>
