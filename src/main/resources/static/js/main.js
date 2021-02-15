@@ -25,8 +25,9 @@ window.onload = () => {
                 <label for="date_end">Дата окончания</label><input id="date_end" type="date">
             `,
             execute(){
+                let name = document.getElementById('poll_name').value
                 const json = JSON.stringify({
-                    name: document.getElementById('poll_name').value,
+                    name: name,
                     dateStart: document.getElementById('date_start').value,
                     dateEnd: document.getElementById('date_end').value,
                     active: true
@@ -47,13 +48,16 @@ window.onload = () => {
                         let pollMenuContent = document.createElement('div')
                         pollMenu.appendChild(pollMenuTitle)
 
-                        pollMenuTitle.innerHTML = document.getElementById('poll_name').value
+                        pollMenuTitle.innerHTML = name
                         pollMenuTitle.classList.add("poll_menu_title")
 
                         pollMenu.appendChild(pollMenuContent)
                         pollMenuContent.innerHTML +=
                             `
-                                <button class="createQuestion">Добавить вопрос</button>
+                                <div class="poll_menu_content_buttons">
+                                    <button class="createQuestion">Добавить вопрос</button>
+                                    <button class="editPoll">Редактировать опрос</button>
+                                </div>
                             `
                         pollMenuContent.classList.add("poll_menu_content")
 
