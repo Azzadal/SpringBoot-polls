@@ -1,5 +1,5 @@
 const base = {}
-
+//плагин модального окна
 base.modal = function (options) {
     function _createModal(options) {
         const modal = document.createElement('div')

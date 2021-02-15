@@ -1,4 +1,3 @@
-
 let modal
 const pollMenuTitle = document.getElementsByClassName('poll_menu_title')
 const pollMenu = document.getElementsByClassName('poll_menu')
@@ -9,7 +8,6 @@ const createQuestion = document.getElementsByClassName('createQuestion')
 const editPoll = document.getElementsByClassName('editPoll')
 const getPolls = document.getElementById('getPolls')
 const pollList = document.getElementsByClassName('poll__list')
-const poll = document.getElementsByClassName('poll')
 const filter = document.getElementById('filter')
 const sortSelect = document.getElementById('sortSelect')
 let questTableBody
@@ -20,74 +18,90 @@ window.onload = () => {
         modal = base.modal({
             title: 'Создание опроса',
             content: `
-                <label for="poll_name">Тема опроса</label><input id="poll_name" type="text"/>
-                <label for="date_start">Дата начала</label><input id="date_start" type="date">
-                <label for="date_end">Дата окончания</label><input id="date_end" type="date">
+                <label for="poll_name">Тема опроса</label><input id="poll_name" type="text" />
+                <label for="date_start">Дата начала</label><input id="date_start" type="date" />
+                <label for="date_end">Дата окончания</label><input id="date_end" type="date" />
             `,
             execute(){
-                let name = document.getElementById('poll_name').value
+                const name = document.getElementById('poll_name').value
+                const dateStart = document.getElementById('date_start').value
+                const dateEnd = document.getElementById('date_end').value
                 const json = JSON.stringify({
                     name: name,
-                    dateStart: document.getElementById('date_start').value,
-                    dateEnd: document.getElementById('date_end').value,
+                    dateStart: dateStart,
+                    dateEnd: dateEnd,
                     active: true
                 })
                 const req = new XMLHttpRequest();
                 req.responseType = "json";
                 let response
-                req.open('POST', window.location + 'api/add_poll');
-                req.setRequestHeader("Content-type", "application/json");
+                if (name === '' || dateStart === '' || dateEnd === ''){
+                    alert("Заполните все поля")
+                } else {
+                    req.open('POST', window.location + 'api/add_poll');
+                    req.setRequestHeader("Content-type", "application/json");
+                    req.onreadystatechange = function () {
+                        if (this.readyState === 4) {
+                            response = this.response
+                            let pollMenu = document.createElement('div')
+                            let pollMenuTitle = document.createElement('div')
+                            let pollMenuContent = document.createElement('div')
+                            let pollMenuDelete = document.createElement('span')
 
+                            pollMenu.appendChild(pollMenuTitle)
+                            pollMenu.prepend(pollMenuDelete)
 
-                req.onreadystatechange = function() {
-                    if (this.readyState === 4) {
-                        response = this.response
-                        console.log('json', response)
-                        let pollMenu = document.createElement('div')
-                        let pollMenuTitle = document.createElement('div')
-                        let pollMenuContent = document.createElement('div')
-                        pollMenu.appendChild(pollMenuTitle)
+                            pollMenuTitle.innerHTML = name
+                            pollMenuDelete.innerHTML = '&times;'
+                            pollMenuTitle.classList.add("poll_menu_title")
+                            pollMenuDelete.classList.add("poll_menu_delete")
 
-                        pollMenuTitle.innerHTML = name
-                        pollMenuTitle.classList.add("poll_menu_title")
+                            pollMenuDelete.addEventListener('click', event => {
+                                const xhr = new XMLHttpRequest()
+                                xhr.open('DELETE', window.location + 'delete_poll/' + response.name);
+                                xhr.send()
+                                pollMenu.remove()
+                            })
 
-                        pollMenu.appendChild(pollMenuContent)
-                        pollMenuContent.innerHTML +=
-                            `
+                            pollMenu.appendChild(pollMenuContent)
+                            pollMenuContent.innerHTML +=
+                                `
                                 <div class="poll_menu_content_buttons">
                                     <button class="createQuestion">Добавить вопрос</button>
                                     <button class="editPoll">Редактировать опрос</button>
                                 </div>
                             `
-                        pollMenuContent.classList.add("poll_menu_content")
+                            pollMenuContent.classList.add("poll_menu_content")
 
-                        pollMenuTitle.addEventListener('click', function () {
-                            if (!pollMenuContent.classList.contains('show')){
-                                pollMenuContent.classList.add('show');
-                                pollMenuContent.style.height = 'auto';
-                            } else {
-                                console.log('else')
-                                pollMenuContent.style.height = '0px';
-                                pollMenuContent.classList.remove('show');
-                            }
-                        })
-                        pollList[0].appendChild(pollMenu)
-                        pollMenu.classList.add("poll_menu")
-                        pollBtnEvent()
-                        addQuestionBtnEvent(response)
-                    }
-                };
-                req.send(json);
+                            pollMenuTitle.addEventListener('click', function () {
+                                if (!pollMenuContent.classList.contains('show')) {
+                                    pollMenuContent.classList.add('show');
+                                    pollMenuContent.style.height = 'auto';
+                                } else {
+                                    console.log('else')
+                                    pollMenuContent.style.height = '0px';
+                                    pollMenuContent.classList.remove('show');
+                                }
+                            })
+                            pollList[0].appendChild(pollMenu)
+                            pollMenu.classList.add("poll_menu")
+                            addQuestionBtnEvent(response)
+                        }
+                    };
+                    req.send(json);
+                }
             }
         })
         setTimeout(modal.open, 1)
     })
+    //обработчик кнопки создания опроса
     getPolls.addEventListener('click', e => {getPollsFunc()})
-
 }
 
+//получение опросов
 function getPollsFunc() {
     let n = filter.selectedIndex
+    let n1 = sortSelect.selectedIndex
     const date = document.getElementById('dateFilter').value
     const name = document.getElementById('nameFilter').value
     let filterOption
@@ -96,8 +110,6 @@ function getPollsFunc() {
     else if (n === 2) filterOption = `onDateEnd/${date}`
     else if (n === 3) filterOption = `onSubString/${name}`
     else filterOption = options[n].value
-
-    let n1 = sortSelect.selectedIndex
 
     const xhr = new XMLHttpRequest()
     xhr.responseType = "json";
@@ -116,13 +128,12 @@ function getPollsFunc() {
                     return 0;
                 })
             }
-
             pollList[0].innerHTML = ''
             for (let i = 0; i < json.length; i++){
                 pollList[0].innerHTML +=
                     `
                             <div class="poll_menu">
-                            <span class="poll_menu_delete" data-del="true">&times;</span>
+                            <span class="poll_menu_delete">&times;</span>
                                 <div class="poll_menu_title">
                                     ${json[i].name}
                                 </div>
@@ -147,6 +158,7 @@ function getPollsFunc() {
             }
             getQuestions(json)
             questTableBody = document.getElementsByClassName('quest_table_body');
+            //заполнение опросов вопросами
             function getQuestions(json){
                 let response
                 for (let i = 0; i < json.length; i++) {
@@ -165,7 +177,6 @@ function getPollsFunc() {
                 }
             }
             deletePoll(json)
-            pollBtnEvent()
             addQuestionBtnEvent(json)
         }
     };
@@ -179,24 +190,16 @@ function getPollsFunc() {
     }, 1000)
 }
 
+//удаление опроса
 function deletePoll(json){
     for (let i = 0; i < json.length; i++) {
+        console.log(i)
         pollMenuDelete[i].addEventListener('click', event => {
             const xhr = new XMLHttpRequest()
             xhr.open('DELETE', window.location + 'delete_poll/' + json[i].name);
             xhr.send()
             pollMenu[i].remove()
             setTimeout(getPollsFunc, 1000)
-        })
-    }
-}
-
-function pollBtnEvent() {
-    for (let i = 0; i < poll.length; i++){
-        poll[i].addEventListener('click', function (){
-            modal = base.modal({
-                title: this.innerText
-            }).open()
         })
     }
 }
@@ -238,7 +241,7 @@ function addQuestionBtnEvent(theme) {
             })
             setTimeout(modal.open, 1)
         })
-
+        //обработчик кнопки редактирования опроса
         editPoll[i].addEventListener('click', () => {
             if (theme[i] !== undefined) name = theme[i].name
             else name = theme.name

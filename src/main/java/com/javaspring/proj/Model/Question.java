@@ -1,11 +1,6 @@
 package com.javaspring.proj.Model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import javax.persistence.Id;
-
 import javax.persistence.*;
-import java.util.Optional;
 
 @Entity
 public class Question {
@@ -14,7 +9,6 @@ public class Question {
     private Integer id;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "poll_id")
-//    @JsonManagedReference
     private Poll poll;
     private String content;
     private String displayOrder;
