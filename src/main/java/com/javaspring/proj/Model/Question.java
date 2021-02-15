@@ -10,7 +10,7 @@ import java.util.Optional;
 @Entity
 public class Question {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "poll_id")
