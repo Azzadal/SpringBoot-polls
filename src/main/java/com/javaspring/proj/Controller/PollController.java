@@ -19,14 +19,12 @@ public class PollController {
         this.pollRepository = pollRepository;
     }
 
-    //получить все опросы
-    @GetMapping(value = "/get_polls")
+    @GetMapping(value = "/polls")
     public Iterable<Poll> getPolls(){
         return pollRepository.findAll();
     }
 
-    //получить опросы по имени
-    @GetMapping(value = "/get_polls/onSubString/{substring}")
+    @GetMapping(value = "/polls/onSubString/{substring}")
     public ArrayList<Poll> getNameOnSubString(@PathVariable ("substring") String substring){
         Iterable<Poll> polls = pollRepository.findAll();
         ArrayList<Poll> pollsAfterFilter = new ArrayList<>();
@@ -37,15 +35,13 @@ public class PollController {
         return pollsAfterFilter;
     }
 
-    //получить опросы по дате начала
-    @GetMapping(value = "/get_polls/onDateStart/{date}")
+    @GetMapping(value = "/polls/onDateStart/{date}")
     public Iterable<Poll> getPollsOnDateStart(@PathVariable ("date") String dateStart) throws ParseException {
         Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateStart);
         return pollRepository.findByDateStart(date);
     }
 
-    //получить опросы по дате окончания
-    @GetMapping(value = "/get_polls/onDateEnd/{date}")
+    @GetMapping(value = "/polls/onDateEnd/{date}")
     public Iterable<Poll> getPollsOnDateEnd(@PathVariable ("date") String dateStart) throws ParseException {
         Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateStart);
         return pollRepository.findByDateEnd(date);

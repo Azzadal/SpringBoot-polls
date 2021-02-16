@@ -113,7 +113,7 @@ function getPollsFunc() {
 
     const xhr = new XMLHttpRequest()
     xhr.responseType = "json";
-    xhr.open('GET', window.location + 'get_polls/' + filterOption);
+    xhr.open('GET', window.location + 'polls/' + filterOption);
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
             let json = xhr.response
@@ -164,7 +164,7 @@ function getPollsFunc() {
                 for (let i = 0; i < json.length; i++) {
                     const xhr = new XMLHttpRequest()
                     xhr.responseType = "json";
-                    xhr.open('GET', window.location + 'get_questions/' + json[i].name);
+                    xhr.open('GET', window.location + 'questions/' + json[i].name);
                     xhr.onreadystatechange = () => {
                         if (xhr.readyState === 4) {
                             response = xhr.response
@@ -193,7 +193,6 @@ function getPollsFunc() {
 //удаление опроса
 function deletePoll(json){
     for (let i = 0; i < json.length; i++) {
-        console.log(i)
         pollMenuDelete[i].addEventListener('click', event => {
             const xhr = new XMLHttpRequest()
             xhr.open('DELETE', window.location + 'delete_poll/' + json[i].name);

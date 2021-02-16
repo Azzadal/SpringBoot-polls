@@ -21,27 +21,23 @@ public class QuestionController {
         this.pollRepository = pollRepository;
     }
 
-    //получить все вопросы
-    @GetMapping(value = "/get_questions")
+    @GetMapping(value = "/questions")
     public Iterable<Question> getQuestions(){
         return questionRepository.findAll();
     }
 
-    //получить вопросы определенного опроса
-    @GetMapping(value = "/get_questions/{poll_name}")
+    @GetMapping(value = "/questions/{poll_name}")
     public List<Question> getQuestList(@PathVariable("poll_name") String name){
         Poll poll = pollRepository.findByName(name);
         return poll.getQuestionList();
     }
 
-    //создать вопрос
     @PostMapping(value = "/api/add_question")
-    public void addQuestion(@RequestBody Object obj){
-        Map<String, String> lhm = (LinkedHashMap<String, String>) obj;
+    public void addQuestion(@RequestBody LinkedHashMap<String, String> obj){
         try {
-            Poll poll = pollRepository.findByName(lhm.get("pollName"));
-            String content = lhm.get("content");
-            String displayOrder = lhm.get("displayOrder");
+            Poll poll = pollRepository.findByName(obj.get("pollName"));
+            String content = obj.get("content");
+            String displayOrder = obj.get("displayOrder");
             Question question = new Question(poll, content, displayOrder);
             questionRepository.save(question);
         } catch (Exception e){
